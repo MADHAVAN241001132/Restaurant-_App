@@ -1,0 +1,139 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String     @id @default(cuid())
+  name      String?
+  email     String     @unique
+  password  String?
+  phone     String?
+  role      String     @default("CUSTOMER") // CUSTOMER, ADMIN
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  orders    Order[]
+  reviews   Review[]
+  cartItems CartItem[]
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  image     String?
+  status    String     @default("ACTIVE") // ACTIVE, INACTIVE
+  menuItems MenuItem[]
+}
+
+model Cuisine {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  image     String?
+  status    String     @default("ACTIVE") // ACTIVE, INACTIVE
+  menuItems MenuItem[]
+}
+
+model MenuItem {
+  id              String      @id @default(cuid())
+  name            String
+  description     String
+  price           Float
+  offerPrice      Float?
+  categoryId      String
+  category        Category    @relation(fields: [categoryId], references: [id])
+  cuisineId       String
+  cuisine         Cuisine     @relation(fields: [cuisineId], references: [id])
+  image           String?
+  veg             Boolean     @default(true)
+  featured        Boolean     @default(false)
+  available       Boolean     @default(true)
+  preparationTime Int         @default(20) // in minutes
+  rating          Float       @default(4.5)
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+  reviews         Review[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model CartItem {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  menuItemId    String
+  menuItem      MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  quantity      Int      @default(1)
+  customization String? // JSON string containing selection (spice level, extra cheese, portion size, etc.)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, menuItemId, customization])
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  status        String      @default("PENDING") // PENDING, ACCEPTED, PREPARING, OUT_FOR_DELIVERY, DELIVERED, CANCELLED
+  subtotal      Float
+  tax           Float
+  delivery      Float
+  discount      Float
+  total         Float
+  paymentStatus String      @default("PENDING") // PENDING, COMPLETED, FAILED
+  paymentMethod String      @default("COD") // COD, RAZORPAY
+  address       String
+  couponCode    String?
+  items         OrderItem[]
+  payments      Payment[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model OrderItem {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId    String
+  menuItem      MenuItem @relation(fields: [menuItemId], references: [id])
+  quantity      Int
+  price         Float
+  customization String? // JSON string containing selections
+}
+
+model Coupon {
+  id         String   @id @default(cuid())
+  code       String   @unique
+  discount   Float // Percentage or flat amount
+  type       String   @default("PERCENTAGE") // PERCENTAGE, FIXED
+  expiry     DateTime
+  usageLimit Int      @default(100)
+  usedCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+}
+
+model Payment {
+  id                String   @id @default(cuid())
+  orderId           String
+  order             Order    @relation(fields: [orderId], references: [id])
+  razorpayOrderId   String
+  razorpayPaymentId String?
+  signature         String?
+  status            String   @default("PENDING") // PENDING, SUCCESS, FAILED
+  amount            Float
+  createdAt         DateTime @default(now())
+}

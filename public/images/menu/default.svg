@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <rect width="400" height="300" rx="24" fill="#f8fafc"/>
+  <rect width="398" height="298" x="1" y="1" rx="23" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+  <g transform="translate(140, 70)">
+    <circle cx="60" cy="60" r="50" fill="#fff" stroke="#cbd5e1" stroke-width="4"/>
+    <circle cx="60" cy="60" r="38" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="6 4"/>
+    <path d="M50,45 C50,38 55,35 60,35 C65,35 70,38 70,45 C75,45 80,50 78,57 C76,64 72,65 72,68 L48,68 C48,65 44,64 42,57 C40,50 45,45 50,45 Z" fill="#94a3b8"/>
+    <rect x="52" y="70" width="16" height="6" rx="2" fill="#64748b"/>
+    <path d="M-5,40 L-5,75 M-10,40 L0,40 M-10,50 L0,50" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round"/>
+    <path d="M125,40 L125,75 M120,40 L130,40 L125,50 Z" fill="#cbd5e1" stroke="#cbd5e1" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+  <text x="200" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="#475569" text-anchor="middle">No Image Available</text>
+  <text x="200" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#94a3b8" text-anchor="middle">Freshly Prepared &amp; Served Hot</text>
+</svg>
