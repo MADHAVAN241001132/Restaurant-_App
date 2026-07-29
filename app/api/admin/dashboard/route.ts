@@ -12,13 +12,13 @@ export async function GET() {
           include: { items: { include: { menuItem: true } } },
         });
 
-        const completedOrders = orders.filter((o) => o.paymentStatus === "COMPLETED");
-        const totalRevenue = completedOrders.reduce((sum, o) => sum + o.total, 0);
+        const completedOrders = orders.filter((o: any) => o.paymentStatus === "COMPLETED");
+        const totalRevenue = completedOrders.reduce((sum, o: any) => sum + o.total, 0);
         const totalOrders = orders.length;
         const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
         // Group status counts
-        const statusCounts = orders.reduce((acc: Record<string, number>, o) => {
+        const statusCounts = orders.reduce((acc: Record<string, number>, o: any) => {
           acc[o.status] = (acc[o.status] || 0) + 1;
           return acc;
         }, {});
@@ -41,7 +41,7 @@ export async function GET() {
           .slice(0, 5);
 
         // Simple monthly data trend (using dates)
-        const salesByMonth = orders.reduce((acc: Record<string, number>, o) => {
+        const salesByMonth = orders.reduce((acc: Record<string, number>, o: any) => {
           const date = new Date(o.createdAt);
           const month = date.toLocaleString("default", { month: "short" });
           acc[month] = (acc[month] || 0) + o.total;
@@ -71,7 +71,7 @@ export async function GET() {
           },
           bestSellers,
           salesTrend: salesTrend.length > 0 ? salesTrend : [{ name: "Jul", sales: totalRevenue }],
-          recentOrders: recentOrders.map((o) => ({
+          recentOrders: recentOrders.map((o: any) => ({
             id: o.id,
             customerName: o.user.name || "Customer",
             total: o.total,
