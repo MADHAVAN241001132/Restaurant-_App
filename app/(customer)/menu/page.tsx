@@ -96,6 +96,7 @@ export default function MenuPage() {
             value={filters.search}
             onChange={(e) => filters.setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-border rounded-full bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary text-sm"
+            suppressHydrationWarning
           />
         </div>
       </div>
