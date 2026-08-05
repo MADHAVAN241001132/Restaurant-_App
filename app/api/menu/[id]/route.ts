@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { runDb } from "@/lib/dbHelper";
 import { MOCK_MENU } from "@/lib/mockData";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> }

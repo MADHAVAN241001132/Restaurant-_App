@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { runDb } from "@/lib/dbHelper";
 import { mockUpdateOrderStatus } from "@/lib/mockData";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();

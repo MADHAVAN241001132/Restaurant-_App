@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { runDb } from "@/lib/dbHelper";
 import { MOCK_ORDERS, mockCreateOrder } from "@/lib/mockData";
 
+export const dynamic = 'force-dynamic';
+
 async function getUserId() {
   const session = await auth();
   return session?.user?.id || "cust_1";

@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { runDb } from "@/lib/dbHelper";
 import { MOCK_COUPONS } from "@/lib/mockData";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
