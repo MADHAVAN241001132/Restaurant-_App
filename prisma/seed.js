@@ -2,7 +2,7 @@ require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 const { PrismaPg } = require('@prisma/adapter-pg');
 const pg = require('pg');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 async function main() {
   const dbUrl = process.env.DATABASE_URL;
