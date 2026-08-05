@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NPM_CONFIG_PRODUCTION = "false"
+  NODE_VERSION = "20"
+
