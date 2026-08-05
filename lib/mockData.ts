@@ -186,7 +186,7 @@ const BASE_MOCK_MENU = [
     offerPrice: null,
     categoryId: "cat_6",
     cuisineId: "cui_1",
-    image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=600&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1619535860434-ba1d8fa12536?w=600&auto=format&fit=crop&q=80",
     veg: true,
     featured: false,
     available: true,
