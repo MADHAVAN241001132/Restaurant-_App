@@ -92,5 +92,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "f3ef7892182d8c368d18b8de36e9ff937f2cf19cf2e259e84b8027cf8b6e6c4c",
 });

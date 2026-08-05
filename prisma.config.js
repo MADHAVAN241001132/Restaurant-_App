@@ -6,6 +6,6 @@ module.exports = defineConfig({
   datasource: {
     // Use process.env directly so Prisma doesn't attempt to resolve env
     // variables via the helper at install time on platforms like Vercel.
-    url: process.env.DATABASE_URL ?? undefined,
+    url: process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/restaurant_db",
   },
 });
