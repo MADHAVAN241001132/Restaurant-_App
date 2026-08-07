@@ -3,9 +3,11 @@ const { defineConfig } = require("prisma/config");
 
 module.exports = defineConfig({
   schema: "prisma/schema.prisma",
+  migrations: {
+    seed: "node prisma/seed.js",
+  },
   datasource: {
-    // Use process.env directly so Prisma doesn't attempt to resolve env
-    // variables via the helper at install time on platforms like Vercel.
-    url: process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/restaurant_db",
+    // Use DIRECT_URL for Prisma CLI migrations/db push to avoid hangs on pooled connection (port 6543)
+    url: process.env.DIRECT_URL || process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/restaurant_db",
   },
 });

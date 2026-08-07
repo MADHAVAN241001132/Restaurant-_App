@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { runDb } from "@/lib/dbHelper";
 import { MOCK_CART, mockAddToCart, mockUpdateCart, mockRemoveFromCart } from "@/lib/mockData";
 
+export const dynamic = "force-dynamic";
+
 // Get user session or fallback to mock user for local testing
 async function getUserId() {
   const session = await auth();
