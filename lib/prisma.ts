@@ -4,43 +4,35 @@ import pg from "pg";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient | undefined };
 
-const getPrismaClient = (): PrismaClient => {
+const createPrismaClient = (): PrismaClient => {
   const dbUrl = process.env.DATABASE_URL;
 
-  // In build environments or without valid DB URL, safely fallback
-  if (!dbUrl) {
-    if (!globalForPrisma.prisma) {
-      globalForPrisma.prisma = new PrismaClient();
-    }
-    return globalForPrisma.prisma;
-  }
-
-  try {
-    const pool = new pg.Pool({
-      connectionString: dbUrl,
-      max: 10,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 5000,
-    });
-
-    const adapter = new PrismaPg(pool);
-
-    if (process.env.NODE_ENV === "production") {
+  if (dbUrl) {
+    try {
+      const pool = new pg.Pool({
+        connectionString: dbUrl,
+        max: 10,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 5000,
+      });
+      const adapter = new PrismaPg(pool);
       return new PrismaClient({ adapter });
-    } else {
-      if (!globalForPrisma.prisma) {
-        globalForPrisma.prisma = new PrismaClient({ adapter });
-      }
-      return globalForPrisma.prisma;
+    } catch (error) {
+      console.warn("⚠️ Failed to initialize PrismaPg adapter, falling back to datasourceUrl:", error);
+      return new PrismaClient({ datasourceUrl: dbUrl });
     }
-  } catch (error) {
-    console.warn("⚠️ Failed to initialize PrismaPg adapter, falling back to default PrismaClient:", error);
-    if (!globalForPrisma.prisma) {
-      globalForPrisma.prisma = new PrismaClient();
-    }
-    return globalForPrisma.prisma;
   }
+
+  // Fallback for build environment when DATABASE_URL is not present
+  return new PrismaClient({
+    datasourceUrl: "postgresql://postgres:postgres@localhost:5432/placeholder",
+  });
 };
 
-export const prisma = getPrismaClient();
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
+
 
