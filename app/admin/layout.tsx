@@ -70,30 +70,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-background border-t border-border relative">
       {/* Mobile Top Sub-Header Bar */}
-      <div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-border bg-card/90 backdrop-blur-md sticky top-16 z-30">
+      <div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-border bg-card sticky top-16 z-30 shadow-xs">
         <button
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-muted/40 text-xs font-bold text-foreground hover:bg-muted transition-colors"
+          onClick={() => setIsMobileOpen(true)}
+          className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-primary/30 bg-primary/10 text-xs font-extrabold text-primary hover:bg-primary/20 transition-colors shadow-xs"
         >
-          <PanelLeftOpen className="h-4 w-4 text-primary" />
-          <span>Admin Menu</span>
+          <PanelLeftOpen className="h-4.5 w-4.5" />
+          <span>Admin Navigation</span>
         </button>
-        <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{currentSection}</span>
+        <span className="text-xs font-extrabold text-foreground tracking-wide">{currentSection}</span>
       </div>
 
-      {/* Backdrop Overlay for Mobile */}
+      {/* Backdrop Overlay for Mobile Drawer */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden transition-opacity"
+          className="fixed inset-0 z-[90] bg-black/75 backdrop-blur-sm md:hidden transition-opacity"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
 
-      {/* Sidebar Panel */}
+      {/* Sidebar Panel - Hidden on mobile unless toggled open */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col bg-card border-r border-border transition-transform duration-300 ease-in-out md:static md:w-64 md:translate-x-0 shrink-0 ${
-          isMobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full md:shadow-none"
-        }`}
+        className={`${
+          isMobileOpen
+            ? "flex fixed inset-y-0 left-0 z-[100] w-72 max-w-[85vw] shadow-2xl animate-in slide-in-from-left duration-200"
+            : "hidden md:flex"
+        } md:static md:w-64 flex-col bg-card border-r border-border shrink-0 min-h-screen`}
       >
         <div className="p-5 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -102,13 +104,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               SECURE
             </span>
           </div>
-          {/* Mobile Explicit Close Button */}
+          {/* Mobile Close Button */}
           <button
             onClick={() => setIsMobileOpen(false)}
-            className="md:hidden p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
-            title="Close menu"
+            className="md:hidden flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold text-destructive bg-destructive/10 rounded-lg hover:bg-destructive/20 transition-colors"
+            title="Close navigation menu"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
+            <span>Close</span>
           </button>
         </div>
 
@@ -120,10 +123,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all ${
                   isActive
                     ? "bg-primary text-primary-foreground shadow-md shadow-primary/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
                 }`}
               >
                 {link.icon}
@@ -137,11 +140,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link
             href="/"
             onClick={() => setIsMobileOpen(false)}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground transition-all hover:bg-muted/30"
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground transition-all hover:bg-muted/30"
           >
             <Home className="h-4.5 w-4.5" />
             Customer View
           </Link>
+          <button
+            onClick={() => setIsMobileOpen(false)}
+            className="md:hidden mt-2 flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border bg-muted/30 text-xs font-bold text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+            Close Admin Menu
+          </button>
         </div>
       </aside>
 
@@ -152,4 +162,5 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
+
 

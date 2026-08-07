@@ -196,7 +196,7 @@ export default function AdminMenuPage() {
         </button>
       </div>
 
-      {/* Items Table Card */}
+      {/* Items Table / Mobile Cards Card */}
       <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm flex flex-col">
         {isLoading ? (
           <div className="p-8 text-center flex flex-col items-center gap-2">
@@ -210,149 +210,222 @@ export default function AdminMenuPage() {
             <p className="text-xs text-muted-foreground max-w-xs">Click Add New Dish to add culinary items to your menu.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-semibold">
-              <thead className="bg-muted/40 text-muted-foreground uppercase text-[10px] tracking-wider border-b border-border">
-                <tr>
-                  <th className="px-6 py-3.5">Item</th>
-                  <th className="px-6 py-3.5">Category</th>
-                  <th className="px-6 py-3.5">Price</th>
-                  <th className="px-6 py-3.5">Availability</th>
-                  <th className="px-6 py-3.5">Status Info</th>
-                  <th className="px-6 py-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/60">
-                {menuItems.map((item: any) => (
-                  <tr key={item.id} className="hover:bg-muted/20 transition-colors">
-                    <td className="px-6 py-4 flex items-center gap-3">
-                      <img
-                        src={item.image || "/images/menu/default.svg"}
-                        alt={item.name}
-                        className="h-10 w-10 rounded-lg object-cover bg-muted shrink-0 border border-border"
-                      />
-                      <div className="min-w-0">
-                        <p className="font-bold text-foreground truncate">{item.name}</p>
-                        <p className="text-[10px] text-muted-foreground truncate max-w-[200px]">
-                          {item.description}
-                        </p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground font-medium">
-                      {item.category?.name || "Uncategorized"}
-                    </td>
-                    <td className="px-6 py-4 text-foreground">
-                      <span className="font-extrabold">₹{item.offerPrice ?? item.price}</span>
-                      {item.offerPrice && (
-                        <span className="text-[10px] text-muted-foreground line-through ml-1.5">
-                          ₹{item.price}
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-xs font-semibold">
+                <thead className="bg-muted/40 text-muted-foreground uppercase text-[10px] tracking-wider border-b border-border">
+                  <tr>
+                    <th className="px-6 py-3.5">Item</th>
+                    <th className="px-6 py-3.5">Category</th>
+                    <th className="px-6 py-3.5">Price</th>
+                    <th className="px-6 py-3.5">Availability</th>
+                    <th className="px-6 py-3.5">Status Info</th>
+                    <th className="px-6 py-3.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {menuItems.map((item: any) => (
+                    <tr key={item.id} className="hover:bg-muted/20 transition-colors">
+                      <td className="px-6 py-4 flex items-center gap-3">
+                        <img
+                          src={item.image || "/images/menu/default.svg"}
+                          alt={item.name}
+                          className="h-10 w-10 rounded-lg object-cover bg-muted shrink-0 border border-border"
+                        />
+                        <div className="min-w-0">
+                          <p className="font-bold text-foreground truncate">{item.name}</p>
+                          <p className="text-[10px] text-muted-foreground truncate max-w-[200px]">
+                            {item.description}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground font-medium">
+                        {item.category?.name || "Uncategorized"}
+                      </td>
+                      <td className="px-6 py-4 text-foreground">
+                        <span className="font-extrabold">₹{item.offerPrice ?? item.price}</span>
+                        {item.offerPrice && (
+                          <span className="text-[10px] text-muted-foreground line-through ml-1.5">
+                            ₹{item.price}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                          item.available
+                            ? "bg-green-500/10 border-green-500/20 text-green-500"
+                            : "bg-red-500/10 border-red-500/20 text-red-500"
+                        }`}>
+                          {item.available ? "In Stock" : "Out of Stock"}
                         </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                        item.available
-                          ? "bg-green-500/10 border-green-500/20 text-green-500"
-                          : "bg-red-500/10 border-red-500/20 text-red-500"
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-1.5">
+                          {item.veg ? (
+                            <span className="rounded-full bg-green-500/10 border border-green-500/20 px-1.5 py-0.5 text-[9px] font-bold text-green-500">
+                              VEG
+                            </span>
+                          ) : (
+                            <span className="rounded-full bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 text-[9px] font-bold text-red-500">
+                              NON-VEG
+                            </span>
+                          )}
+                          {item.featured && (
+                            <span className="rounded-full bg-primary/10 border border-primary/20 px-1.5 py-0.5 text-[9px] font-bold text-primary">
+                              STAR
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex gap-2 justify-end">
+                          <button
+                            onClick={() => handleOpenEdit(item)}
+                            className="p-1.5 text-muted-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                            title="Edit Item"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to delete ${item.name}?`)) {
+                                deleteMutation.mutate(item.id);
+                              }
+                            }}
+                            className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-muted rounded-md transition-colors"
+                            title="Delete Item"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Responsive Cards View */}
+            <div className="md:hidden divide-y divide-border/60">
+              {menuItems.map((item: any) => (
+                <div key={item.id} className="p-4 flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={item.image || "/images/menu/default.svg"}
+                      alt={item.name}
+                      className="h-12 w-12 rounded-xl object-cover bg-muted shrink-0 border border-border"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-extrabold text-sm text-foreground truncate">{item.name}</h4>
+                      <p className="text-[11px] text-muted-foreground line-clamp-1">{item.description}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="font-black text-xs text-primary">₹{item.offerPrice ?? item.price}</span>
+                        {item.offerPrice && (
+                          <span className="text-[10px] text-muted-foreground line-through">₹{item.price}</span>
+                        )}
+                        <span className="text-[10px] font-bold text-muted-foreground bg-muted/40 px-2 py-0.5 rounded-md">
+                          {item.category?.name || "Cat"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <div className="flex gap-1.5 items-center">
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold border ${
+                        item.available ? "bg-green-500/10 border-green-500/20 text-green-500" : "bg-red-500/10 border-red-500/20 text-red-500"
                       }`}>
                         {item.available ? "In Stock" : "Out of Stock"}
                       </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1.5">
-                        {item.veg ? (
-                          <span className="rounded-full bg-green-500/10 border border-green-500/20 px-1.5 py-0.5 text-[9px] font-bold text-green-500">
-                            VEG
-                          </span>
-                        ) : (
-                          <span className="rounded-full bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 text-[9px] font-bold text-red-500">
-                            NON-VEG
-                          </span>
-                        )}
-                        {item.featured && (
-                          <span className="rounded-full bg-primary/10 border border-primary/20 px-1.5 py-0.5 text-[9px] font-bold text-primary">
-                            STAR
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex gap-2 justify-end">
-                        <button
-                          onClick={() => handleOpenEdit(item)}
-                          className="p-1.5 text-muted-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
-                          title="Edit Item"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (confirm(`Are you sure you want to delete ${item.name}?`)) {
-                              deleteMutation.mutate(item.id);
-                            }
-                          }}
-                          className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-muted rounded-md transition-colors"
-                          title="Delete Item"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      {item.veg ? (
+                        <span className="rounded-full bg-green-500/10 border border-green-500/20 px-2 py-0.5 text-[9px] font-bold text-green-500">
+                          VEG
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-red-500/10 border border-red-500/20 px-2 py-0.5 text-[9px] font-bold text-red-500">
+                          NON-VEG
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleOpenEdit(item)}
+                        className="px-3 py-1 text-xs font-bold text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Are you sure you want to delete ${item.name}?`)) {
+                            deleteMutation.mutate(item.id);
+                          }
+                        }}
+                        className="px-3 py-1 text-xs font-bold text-destructive bg-destructive/10 rounded-lg hover:bg-destructive/20 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
-      {/* Add/Edit Modal Dialog Panel */}
+      {/* Add/Edit Modal Dialog Panel - Mobile Friendly Overflow & Heights */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="w-full max-w-2xl rounded-3xl border border-border bg-card shadow-2xl p-6 flex flex-col gap-5 animate-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center border-b border-border/50 pb-3">
-              <h3 className="text-xl font-bold text-foreground">
-                {editingId ? "Modify Menu Item" : "Create Menu Item"}
-              </h3>
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
+          <div className="w-full max-w-2xl max-h-[85vh] sm:max-h-[90vh] flex flex-col rounded-3xl border border-border bg-card shadow-2xl my-auto overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 border-b border-border flex justify-between items-center bg-card shrink-0">
+              <div>
+                <h3 className="text-lg sm:text-xl font-extrabold text-foreground">
+                  {editingId ? "Modify Menu Item" : "Create New Menu Item"}
+                </h3>
+                <p className="text-[11px] text-muted-foreground">Fill in details for your culinary offering.</p>
+              </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-muted-foreground hover:text-foreground text-sm font-semibold p-1"
+                className="flex items-center justify-center h-8 w-8 rounded-full bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted font-extrabold transition-colors"
+                title="Close modal"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-xs font-semibold">
+            {/* Modal Form Scrollable Content */}
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 text-xs font-semibold">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Item Name */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Dish Name *</label>
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Dish Name *</label>
                   <input
                     required
                     type="text"
                     placeholder="e.g. Margherita Pizza"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full border border-border rounded-xl bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-primary text-foreground"
+                    className="w-full border border-border rounded-xl bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary text-foreground"
                   />
                 </div>
 
                 {/* Preparation Time */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Prep Time (Mins) *</label>
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Prep Time (Mins) *</label>
                   <input
                     required
                     type="number"
                     value={preparationTime}
                     onChange={(e) => setPreparationTime(e.target.value)}
-                    className="w-full border border-border rounded-xl bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-primary text-foreground"
+                    className="w-full border border-border rounded-xl bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary text-foreground"
                   />
                 </div>
               </div>
 
               {/* Description */}
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Description *</label>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Description *</label>
                 <textarea
                   required
                   rows={2}
@@ -366,7 +439,7 @@ export default function AdminMenuPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Price */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Regular Price (₹) *</label>
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Regular Price (₹) *</label>
                   <input
                     required
                     type="number"
@@ -374,20 +447,20 @@ export default function AdminMenuPage() {
                     placeholder="299"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    className="w-full border border-border rounded-xl bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-primary text-foreground"
+                    className="w-full border border-border rounded-xl bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary text-foreground"
                   />
                 </div>
 
                 {/* Offer Price */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Special Offer Price (₹)</label>
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Special Offer Price (₹)</label>
                   <input
                     type="number"
                     step="0.01"
                     placeholder="249 (Optional)"
                     value={offerPrice}
                     onChange={(e) => setOfferPrice(e.target.value)}
-                    className="w-full border border-border rounded-xl bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-primary text-foreground"
+                    className="w-full border border-border rounded-xl bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary text-foreground"
                   />
                 </div>
               </div>
@@ -395,7 +468,7 @@ export default function AdminMenuPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Category Selection */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Category *</label>
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Category *</label>
                   <select
                     value={categoryId}
                     onChange={(e) => setCategoryId(e.target.value)}
@@ -411,7 +484,7 @@ export default function AdminMenuPage() {
 
                 {/* Cuisine Selection */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Cuisine *</label>
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Cuisine *</label>
                   <select
                     value={cuisineId}
                     onChange={(e) => setCuisineId(e.target.value)}
@@ -428,7 +501,7 @@ export default function AdminMenuPage() {
 
               {/* Image Upload / URL Input */}
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Dish Image</label>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Dish Image</label>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* File Upload Input */}
@@ -438,7 +511,7 @@ export default function AdminMenuPage() {
                       type="file"
                       accept="image/*"
                       onChange={handleFileUpload}
-                      className="w-full border border-border rounded-xl bg-background text-xs text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/15 file:text-primary hover:file:bg-primary/25 cursor-pointer file:cursor-pointer p-1.5 focus:outline-none"
+                      className="w-full border border-border rounded-xl bg-background text-xs text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/15 file:text-primary hover:file:bg-primary/25 cursor-pointer p-1.5 focus:outline-none"
                     />
                     {uploading && <span className="text-[10px] text-primary animate-pulse font-semibold">Uploading image...</span>}
                   </div>
@@ -468,7 +541,7 @@ export default function AdminMenuPage() {
               </div>
 
               {/* Flags Switch Panel */}
-              <div className="grid grid-cols-3 gap-4 border border-border p-3.5 rounded-2xl bg-muted/20">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border border-border p-3.5 rounded-2xl bg-muted/20">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -502,7 +575,7 @@ export default function AdminMenuPage() {
 
               {error && <p className="text-xs font-semibold text-red-500 text-center">{error}</p>}
 
-              {/* Buttons */}
+              {/* Modal Footer Buttons */}
               <div className="flex gap-3 justify-end border-t border-border/50 pt-4 mt-2">
                 <button
                   type="button"

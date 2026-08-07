@@ -159,13 +159,36 @@ export default function Navbar() {
                   My Orders
                 </Link>
                 {isAdmin && (
-                  <Link
-                    href="/admin/dashboard"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-secondary hover:text-secondary/80 transition-colors font-semibold"
-                  >
-                    Admin Dashboard
-                  </Link>
+                  <div className="flex flex-col gap-2 pt-2 border-t border-border/40">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-secondary">Admin Console</span>
+                    <Link
+                      href="/admin/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`text-xs font-bold transition-colors ${
+                        pathname === "/admin/dashboard" ? "text-secondary" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      📊 Dashboard
+                    </Link>
+                    <Link
+                      href="/admin/menu"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`text-xs font-bold transition-colors ${
+                        pathname === "/admin/menu" ? "text-secondary" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      🍲 Menu Management
+                    </Link>
+                    <Link
+                      href="/admin/orders"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`text-xs font-bold transition-colors ${
+                        pathname === "/admin/orders" ? "text-secondary" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      📋 Order Tracker
+                    </Link>
+                  </div>
                 )}
               </>
             )}
