@@ -5,29 +5,21 @@ import pg from "pg";
 const globalForPrisma = global as unknown as { prisma: PrismaClient | undefined };
 
 const createPrismaClient = (): PrismaClient => {
-  const dbUrl = process.env.DATABASE_URL;
+  const dbUrl =
+    process.env.DATABASE_URL ||
+    process.env.DIRECT_URL ||
+    "postgresql://postgres:postgres@localhost:5432/placeholder";
 
-  if (dbUrl) {
-    try {
-      const pool = new pg.Pool({
-        connectionString: dbUrl,
-        ssl: { rejectUnauthorized: false },
-        max: 10,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 10000,
-      });
-      const adapter = new PrismaPg(pool);
-      return new PrismaClient({ adapter });
-    } catch (error) {
-      console.warn("⚠️ Failed to initialize PrismaPg adapter, falling back to datasourceUrl:", error);
-      return new PrismaClient({ datasourceUrl: dbUrl });
-    }
-  }
-
-  // Fallback for build environment when DATABASE_URL is not present
-  return new PrismaClient({
-    datasourceUrl: "postgresql://postgres:postgres@localhost:5432/placeholder",
+  const pool = new pg.Pool({
+    connectionString: dbUrl,
+    ssl: { rejectUnauthorized: false },
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
   });
+
+  const adapter = new PrismaPg(pool);
+  return new PrismaClient({ adapter });
 };
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
@@ -35,5 +27,6 @@ export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
+
 
 
