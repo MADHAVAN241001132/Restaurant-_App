@@ -177,22 +177,32 @@ export default function LandingPage() {
                       <img
                         src={item.image || "/images/menu/default.svg"}
                         alt={item.name}
-                        className="h-full w-full object-cover group-hover:scale-102 transition-transform duration-300"
+                        className={`h-full w-full object-cover group-hover:scale-102 transition-transform duration-300 ${
+                          !item.available ? "opacity-40 grayscale" : ""
+                        }`}
                       />
-                      <div className="absolute top-3 left-3 flex gap-2">
-                        {item.veg ? (
-                          <span className="rounded-full bg-green-500/15 border border-green-500/30 px-2 py-0.5 text-xs font-semibold text-green-500 backdrop-blur-md">
-                            Veg
+                      <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                        {!item.available ? (
+                          <span className="rounded-full bg-destructive px-2.5 py-0.5 text-xs font-black text-destructive-foreground shadow-md">
+                            Out of Stock
                           </span>
                         ) : (
-                          <span className="rounded-full bg-red-500/15 border border-red-500/30 px-2 py-0.5 text-xs font-semibold text-red-500 backdrop-blur-md">
-                            Non-Veg
-                          </span>
-                        )}
-                        {item.offerPrice && (
-                          <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-bold text-primary-foreground shadow-md shadow-primary/20">
-                            Offer
-                          </span>
+                          <>
+                            {item.veg ? (
+                              <span className="rounded-full bg-green-500/15 border border-green-500/30 px-2 py-0.5 text-xs font-semibold text-green-500 backdrop-blur-md">
+                                Veg
+                              </span>
+                            ) : (
+                              <span className="rounded-full bg-red-500/15 border border-red-500/30 px-2 py-0.5 text-xs font-semibold text-red-500 backdrop-blur-md">
+                                Non-Veg
+                              </span>
+                            )}
+                            {item.offerPrice && (
+                              <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-bold text-primary-foreground shadow-md shadow-primary/20">
+                                Offer
+                              </span>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
@@ -233,11 +243,16 @@ export default function LandingPage() {
                         </div>
 
                         <button
+                          disabled={!item.available}
                           onClick={() => addToCart(item.id, 1)}
-                          className="flex h-9 items-center justify-center rounded-lg bg-primary hover:bg-primary/95 text-primary-foreground px-4 text-sm font-semibold gap-1.5 shadow-sm shadow-primary/10 transition-colors"
+                          className={`flex h-9 items-center justify-center rounded-lg px-4 text-sm font-semibold gap-1.5 transition-colors ${
+                            !item.available
+                              ? "bg-muted/80 text-muted-foreground border border-border cursor-not-allowed"
+                              : "bg-primary hover:bg-primary/95 text-primary-foreground shadow-sm shadow-primary/10"
+                          }`}
                         >
                           <ShoppingCart className="h-4 w-4" />
-                          Add
+                          {item.available ? "Add" : "Out of Stock"}
                         </button>
                       </div>
                     </div>
