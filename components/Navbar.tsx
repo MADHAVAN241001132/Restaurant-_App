@@ -168,7 +168,7 @@ export default function Navbar() {
                         pathname === "/admin/dashboard" ? "text-secondary" : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      📊 Dashboard
+                      Dashboard
                     </Link>
                     <Link
                       href="/admin/menu"
@@ -177,7 +177,7 @@ export default function Navbar() {
                         pathname === "/admin/menu" ? "text-secondary" : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      🍲 Menu Management
+                      Menu Management
                     </Link>
                     <Link
                       href="/admin/orders"
@@ -186,7 +186,7 @@ export default function Navbar() {
                         pathname === "/admin/orders" ? "text-secondary" : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      📋 Order Tracker
+                      Order Tracker
                     </Link>
                   </div>
                 )}

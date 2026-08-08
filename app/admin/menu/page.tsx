@@ -136,6 +136,9 @@ export default function AdminMenuPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminMenu"] });
+      queryClient.invalidateQueries({ queryKey: ["menu"] });
+      queryClient.invalidateQueries({ queryKey: ["adminDashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["featuredMenu"] });
       setIsOpen(false);
     },
     onError: (err: any) => {
@@ -151,6 +154,9 @@ export default function AdminMenuPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminMenu"] });
+      queryClient.invalidateQueries({ queryKey: ["menu"] });
+      queryClient.invalidateQueries({ queryKey: ["adminDashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["featuredMenu"] });
     },
   });
 

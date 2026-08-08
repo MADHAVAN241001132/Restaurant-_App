@@ -54,11 +54,19 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
+    const { id: _id, category, cuisine, reviews, createdAt, updatedAt, ...cleanBody } = body;
+
+    if (cleanBody.price !== undefined) cleanBody.price = Number(cleanBody.price);
+    if (cleanBody.offerPrice !== undefined) {
+      cleanBody.offerPrice = (cleanBody.offerPrice === null || cleanBody.offerPrice === "") ? null : Number(cleanBody.offerPrice);
+    }
+    if (cleanBody.preparationTime !== undefined) cleanBody.preparationTime = Number(cleanBody.preparationTime);
+
     const updatedItem = await runDb(
       async () => {
         return await prisma.menuItem.update({
           where: { id },
-          data: body,
+          data: cleanBody,
           include: { category: true, cuisine: true },
         });
       },
@@ -69,10 +77,7 @@ export async function PUT(
         }
         const updated = {
           ...MOCK_MENU[idx],
-          ...body,
-          price: body.price !== undefined ? Number(body.price) : MOCK_MENU[idx].price,
-          offerPrice: body.offerPrice !== undefined ? (body.offerPrice === null ? null : Number(body.offerPrice)) : MOCK_MENU[idx].offerPrice,
-          preparationTime: body.preparationTime !== undefined ? Number(body.preparationTime) : MOCK_MENU[idx].preparationTime,
+          ...cleanBody,
         };
         MOCK_MENU[idx] = updated;
         return {
