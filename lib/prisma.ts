@@ -6,8 +6,8 @@ const globalForPrisma = global as unknown as { prisma: PrismaClient | undefined 
 
 const createPrismaClient = (): PrismaClient => {
   const dbUrl =
-    process.env.DATABASE_URL ||
     process.env.DIRECT_URL ||
+    process.env.DATABASE_URL ||
     "postgresql://postgres:postgres@localhost:5432/placeholder";
 
   const pool = new pg.Pool({

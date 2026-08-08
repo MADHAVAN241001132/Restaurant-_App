@@ -255,11 +255,17 @@ const BASE_MOCK_MENU = [
   }
 ];
 
-export const MOCK_MENU: MenuItem[] = BASE_MOCK_MENU.map(item => ({
+const globalForMock = global as unknown as { mockMenu: MenuItem[] | undefined };
+
+export const MOCK_MENU: MenuItem[] = globalForMock.mockMenu ?? BASE_MOCK_MENU.map(item => ({
   ...item,
   createdAt: new Date(),
   updatedAt: new Date()
 })) as MenuItem[];
+
+if (process.env.NODE_ENV !== "production") {
+  globalForMock.mockMenu = MOCK_MENU;
+}
 
 export const MOCK_COUPONS: Coupon[] = [
   { id: "coup_1", code: "WELCOME10", discount: 10, type: "PERCENTAGE", expiry: "2028-12-31", usageLimit: 100, usedCount: 12 },

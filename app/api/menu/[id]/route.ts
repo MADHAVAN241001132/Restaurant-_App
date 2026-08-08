@@ -61,40 +61,64 @@ export async function PUT(
       cleanBody.offerPrice = (cleanBody.offerPrice === null || cleanBody.offerPrice === "") ? null : Number(cleanBody.offerPrice);
     }
     if (cleanBody.preparationTime !== undefined) cleanBody.preparationTime = Number(cleanBody.preparationTime);
+    if (cleanBody.available !== undefined) cleanBody.available = Boolean(cleanBody.available);
+    if (cleanBody.veg !== undefined) cleanBody.veg = Boolean(cleanBody.veg);
+    if (cleanBody.featured !== undefined) cleanBody.featured = Boolean(cleanBody.featured);
 
+    // 1. Synchronize in-memory mock state first so fallback reads updated state
+    const mockIdx = MOCK_MENU.findIndex(
+      (item) => item.id === id || item.name.toLowerCase() === (cleanBody.name || "").toLowerCase()
+    );
+    if (mockIdx !== -1) {
+      MOCK_MENU[mockIdx] = {
+        ...MOCK_MENU[mockIdx],
+        ...cleanBody,
+        updatedAt: new Date(),
+      };
+    }
+
+    // 2. Synchronize database state
     const updatedItem = await runDb(
       async () => {
-        return await prisma.menuItem.update({
-          where: { id },
-          data: cleanBody,
-          include: { category: true, cuisine: true },
-        });
+        try {
+          return await prisma.menuItem.update({
+            where: { id },
+            data: cleanBody,
+            include: { category: true, cuisine: true },
+          });
+        } catch (err) {
+          // If ID format differs between mock & DB seed, match by dish name
+          if (cleanBody.name) {
+            const dbItem = await prisma.menuItem.findFirst({ where: { name: cleanBody.name } });
+            if (dbItem) {
+              return await prisma.menuItem.update({
+                where: { id: dbItem.id },
+                data: cleanBody,
+                include: { category: true, cuisine: true },
+              });
+            }
+          }
+          throw err;
+        }
       },
       () => {
-        const idx = MOCK_MENU.findIndex((item) => item.id === id);
-        if (idx === -1) {
-          return null;
-        }
-        const updated = {
-          ...MOCK_MENU[idx],
-          ...cleanBody,
-        };
-        MOCK_MENU[idx] = updated;
+        const item = mockIdx !== -1 ? MOCK_MENU[mockIdx] : null;
+        if (!item) return null;
         return {
-          ...updated,
-          category: { id: updated.categoryId, name: "Category", status: "ACTIVE", image: null },
-          cuisine: { id: updated.cuisineId, name: "Cuisine", status: "ACTIVE", image: null },
+          ...item,
+          category: { id: item.categoryId, name: "Category", status: "ACTIVE", image: null },
+          cuisine: { id: item.cuisineId, name: "Cuisine", status: "ACTIVE", image: null },
           createdAt: new Date(),
           updatedAt: new Date(),
         };
       }
     );
 
-    if (!updatedItem) {
+    if (!updatedItem && mockIdx === -1) {
       return NextResponse.json({ error: "Menu item not found" }, { status: 404 });
     }
 
-    return NextResponse.json(updatedItem);
+    return NextResponse.json(updatedItem || MOCK_MENU[mockIdx]);
   } catch (error) {
     console.error("PUT menu item error:", error);
     return NextResponse.json({ error: "Failed to update menu item" }, { status: 500 });
@@ -108,24 +132,35 @@ export async function DELETE(
   try {
     const { id } = await params;
 
+    // 1. Remove from in-memory mock state
+    const mockIdx = MOCK_MENU.findIndex((item) => item.id === id);
+    let deletedMock = null;
+    if (mockIdx !== -1) {
+      deletedMock = MOCK_MENU[mockIdx];
+      MOCK_MENU.splice(mockIdx, 1);
+    }
+
+    // 2. Remove from database
     const deletedItem = await runDb(
       async () => {
-        return await prisma.menuItem.delete({
-          where: { id },
-        });
-      },
-      () => {
-        const idx = MOCK_MENU.findIndex((item) => item.id === id);
-        if (idx === -1) {
-          return null;
+        try {
+          return await prisma.menuItem.delete({
+            where: { id },
+          });
+        } catch (err) {
+          if (deletedMock?.name) {
+            const dbItem = await prisma.menuItem.findFirst({ where: { name: deletedMock.name } });
+            if (dbItem) {
+              return await prisma.menuItem.delete({ where: { id: dbItem.id } });
+            }
+          }
+          throw err;
         }
-        const deleted = MOCK_MENU[idx];
-        MOCK_MENU.splice(idx, 1);
-        return deleted;
-      }
+      },
+      () => deletedMock
     );
 
-    if (!deletedItem) {
+    if (!deletedItem && !deletedMock) {
       return NextResponse.json({ error: "Menu item not found" }, { status: 404 });
     }
 
